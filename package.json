@@ -3,10 +3,10 @@
   "name": "jml",
   "description": "JS-driven render engine",
   "version": "0.1.0",
-  "homepage": "http://github.com/Tenphi/node-jml",
+  "homepage": "http://github.com/Tenphi/jquery-jml",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Tenphi/node-jml.git"
+    "url": "git://github.com/Tenphi/jquery-jml.git"
   },
   "main": "./lib/jml.js",
   "dependencies": {
