@@ -2,16 +2,15 @@
   "author": "Andrey Yamanov <tenphi@gmail.com> (http://tenphi.com)",
   "name": "jml",
   "description": "JS-driven render engine",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "homepage": "http://github.com/Tenphi/jml",
   "repository": {
     "type": "git",
     "url": "git://github.com/Tenphi/jml.git"
   },
   "main": "./jml.js",
-  "dependencies": {
-    "jQuery": "*"
-  },
+  "keywords": ["template", "engine", "render"],
+  "dependencies": {},
   "devDependencies": {},
   "optionalDependencies": {},
   "engines": {

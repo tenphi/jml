@@ -1,20 +1,115 @@
 /*!
-* jQuery JML plugin
+* JML
 * Copyright(c) 2012 Andrey Yamanov <tenphi@gmail.com>
 * MIT Licensed
-* @version 0.2.5
+* @version 0.3.0
 */
 
 (function() {
 
-var init = (function($) {
+var init = (function() {
 
-    var extend = $.extend,
-        isArray = $.isArray,
-        isFunction = $.isFunction,
-        isNumeric = $.isNumeric,
-        isPlainObject = $.isPlainObject,
-        isEmptyObject = $.isEmptyObject,
+    var extend = function(obj, extObj) {
+            if (arguments.length > 2) {
+                for (var a = 1; a < arguments.length; a++) {
+                    extend(obj, arguments[a]);
+                }
+            } else {
+                for (var i in extObj) {
+                    obj[i] = extObj[i];
+                }
+            }
+            return obj;
+        },
+        clone = function clone(obj){
+            if(obj == null || typeof(obj) != 'object')
+                return obj;
+
+            var temp = obj.constructor();
+
+            for(var key in obj)
+                temp[key] = clone(obj[key]);
+            return temp;
+        },
+        unique = function(arr) {
+            var arr = clone(arr).sort();
+            for (var i = 0; i < arr.length; i++) {
+                if (i && arr[i-1] === arr[i]) {
+                    arr.splice(i,1);
+                }
+            }
+            return arr;
+        },
+        inArray = function(val, arr) {
+            for (var i = 0, len = arr.length; i < len; i++) {
+                if (arr[i] === val) {
+                    return i;
+                }
+            }
+            return -1;
+        },
+        map = function(elems, callback, arg) {
+            var ret = [];
+            if (isArray(elems)) {
+                for(var i = 0, len = elems.length; i < len; i++) {
+                    var value = callback(elems[i], i, arg);
+                    if (value != null) {
+                        ret.push(value);
+                    }
+                }
+            } else if (isPlainObject(elems)) {
+                for (var name in elems) {
+                    var value = callback(elems[name], name, arg);
+                    if (value != null) {
+                        ret.push(value);
+                    }
+                }
+            } else {
+                return elems;
+            }
+            
+            return ret.concat.apply([], ret);
+        },
+        isArray = Array.isArray || function(arr) {
+            return arr instanceof Array;
+        },
+        isFunction = function(func) {
+            return typeof(func) === 'function';
+        },
+        isNumeric = function(num) {
+            return typeof(num) === 'number';
+        },
+        isPlainObject = function( obj ) {
+            if ( !obj || typeof(obj) !== "object" || obj.nodeType || obj === window ) {
+                return false;
+            }
+
+            try {
+                if ( obj.constructor &&
+                    !Object.hasOwnProperty.call(obj, "constructor") &&
+                    !Object.hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf") ) {
+                    return false;
+                }
+            } catch ( e ) {
+                return false;
+            }
+            
+            var key;
+            for ( key in obj ) {}
+
+            return key === undefined || Object.hasOwnProperty.call( obj, key );
+        },
+        isEmptyObject = function(obj) {
+            if (typeof(obj) !== 'object') {
+                return false;
+            }
+            var flag = true;
+            for (var key in obj) {
+                flag = true;
+                break;
+            }
+            return flag;
+        },
         isString = function(value) {
             return typeof(value) === 'string';
         },
@@ -39,13 +134,8 @@ var init = (function($) {
             return obj[last];
         };
 
-    /* JML ENGINE */
-    
-    var jml = {
-        _jQuery: $
-    };
+    var jml = {};
     var gid = 0;
-    var cache = {};
 
     jml.views = {};
     
@@ -154,8 +244,8 @@ var init = (function($) {
             name = jml.findViewName(elm.sid, context ? context : undefined);
             view = jml.views[name];
             if (view) {
-                state = view.state ? $.extend(true, {}, view.state) : {};
-                state = extend(true, state, elm.state);
+                state = view.state ? clone(view.state) : {};
+                state = extend(state, elm.state);
                 var id = '';
                 
                 if (elm.content.length) state.content = elm.content;
@@ -179,10 +269,10 @@ var init = (function($) {
         }
         
         if (!isEmptyObject(elm.styles)) {
-            if ($.jcss) {
+            if (window.jcss) {
                 for (var style in elm.styles) {
-                    if ($.jcss.mixins[style]) {
-                        var styles = $.jcss.mixins[style](elm.styles[style]);
+                    if (window.jcss.mixins[style]) {
+                        var styles = window.jcss.mixins[style](elm.styles[style]);
                         if (!styles[style]) {
                             delete elm.styles[style];
                         } else {
@@ -203,7 +293,7 @@ var init = (function($) {
         }
         
         if (elm.classes.length) {
-            elm.classes = $.unique(elm.classes);
+            elm.classes = unique(elm.classes);
             elm.attrs['class'] = elm.classes.join(' ');
         }
         if (elm.id) {
@@ -211,9 +301,9 @@ var init = (function($) {
         }
         
         if (!elm.tag) {
-            throw { message: 'Tag name not set', element: elm };
+            throw {message: 'Tag name not set', element: elm};
         }
-        if ($.inArray(elm.tag, jml.noClose) == -1) {
+        if (!~inArray(elm.tag, jml.noClose)) {
             out += '<' + elm.tag + jml.renderAttrs(elm.attrs) + '>';
             for ( i = 0; i < elm.content.length; i++) {
                 if (typeof(elm.content[i]) == 'string') {
@@ -302,7 +392,7 @@ var init = (function($) {
         var path = name.split('.');
         if(path[1]) {
             return function() {
-                return getByPath(this, extend([], path));
+                return getByPath(this, [].concat(path));
             };
         }
         return function() {
@@ -312,7 +402,7 @@ var init = (function($) {
     
     jml.classes = function classes (classes) {
         if (!isArray(classes)) return '';
-        classes = $.unique(classes);
+        classes = unique(classes);
         return (classes.length ? '.' + classes.join('.') : '');
     };
     
@@ -329,52 +419,60 @@ var init = (function($) {
         return out;
     };
     
-    jml.map = function map (name, handler) {
+    jml.map = function jmlMap (name, handler) {
         return function() {
             if (!isArray(this[name])) return '';
             var self = this;
-            return $.map(this[name], function() {
+            return map(this[name], function() {
                 return handler.apply(self, getArgs(arguments));
             });
         }
     };
     
-    $.jml = jml;
+    /* Setup plugin for jQuery */
     
-    /* Render function for jQuery */
-    
-    $.fn.render = function(view, state, place) {
-        if (isString(state)) {
-            place = state;
-            state = {};
-        }
-        if (!state) {
-            state = {};
-        }
-        if (!place || !isString(place)) place = 'instead';
-        
-        var html = $.jml.render(view, state);
-        
-        switch(place) {
-            case 'top':
-                this.prepend(html);
-                break;
-            case 'bottom':
-                this.append(html);
-                break;
-            case 'before':
-                this.before(html);
-                break;
-            case 'after':
-                this.after(html);
-                break;
-            default:
-                this.html(html);
-                break;
+    jml.jQuery = function($) {
+        if (!$) {
+            return jml._jQuery;
+        } else {
+            jml._jQuery = $;
         }
         
-        return this;
-    };
+        $.fn.render = function(view, state, place) {
+            if (isString(state)) {
+                place = state;
+                state = {};
+            }
+            if (!state) {
+                state = {};
+            }
+            if (!place || !isString(place)) place = 'instead';
+
+            var html = jml.render(view, state);
+
+            switch(place) {
+                case 'top':
+                    this.prepend(html);
+                    break;
+                case 'bottom':
+                    this.append(html);
+                    break;
+                case 'before':
+                    this.before(html);
+                    break;
+                case 'after':
+                    this.after(html);
+                    break;
+                default:
+                    this.html(html);
+                    break;
+            }
+
+            return this;
+        };
+        
+        return jml;
+    }
     
     return jml;
     
@@ -383,19 +481,10 @@ var init = (function($) {
 try {
 	/* nodejs stuff */
     if (!module.exports) throw '';
-    var $ = require('jQuery');
-    var jml = init($);
-    jml.jQuery = function jQuery($) {
-        if (!$) {
-            return jml._jQuery;
-        }
-        var jml = init($);
-        jml.jQuery = jQuery;
-        return jml;
-    }
+    var jml = init();
 	module.exports = jml;
 } catch(e) {
-	init(jQuery);
+	window.jml = init();
 }
 
 })();
