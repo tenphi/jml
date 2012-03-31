@@ -2,7 +2,7 @@
   "author": "Andrey Yamanov <tenphi@gmail.com> (http://tenphi.com)",
   "name": "jml",
   "description": "JS-driven render engine",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "homepage": "http://github.com/Tenphi/jml",
   "repository": {
     "type": "git",

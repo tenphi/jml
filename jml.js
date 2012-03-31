@@ -2,7 +2,7 @@
 * JML
 * Copyright(c) 2012 Andrey Yamanov <tenphi@gmail.com>
 * MIT Licensed
-* @version 0.3.0
+* @version 0.3.2
 */
 
 (function() {
@@ -32,7 +32,7 @@ var init = (function() {
             return temp;
         },
         unique = function(arr) {
-            var arr = clone(arr).sort();
+            arr = clone(arr).sort();
             for (var i = 0; i < arr.length; i++) {
                 if (i && arr[i-1] === arr[i]) {
                     arr.splice(i,1);
@@ -49,17 +49,17 @@ var init = (function() {
             return -1;
         },
         map = function(elems, callback, arg) {
-            var ret = [];
+            var ret = [], value;
             if (isArray(elems)) {
                 for(var i = 0, len = elems.length; i < len; i++) {
-                    var value = callback(elems[i], i, arg);
+                    value = callback(elems[i], i, arg);
                     if (value != null) {
                         ret.push(value);
                     }
                 }
             } else if (isPlainObject(elems)) {
                 for (var name in elems) {
-                    var value = callback(elems[name], name, arg);
+                    value = callback(elems[name], name, arg);
                     if (value != null) {
                         ret.push(value);
                     }
@@ -80,7 +80,7 @@ var init = (function() {
             return typeof(num) === 'number';
         },
         isPlainObject = function( obj ) {
-            if ( !obj || typeof(obj) !== "object" || obj.nodeType || obj === window ) {
+            if ( !obj || typeof(obj) !== "object" || obj.nodeType ) {
                 return false;
             }
 
@@ -101,11 +101,11 @@ var init = (function() {
         },
         isEmptyObject = function(obj) {
             if (typeof(obj) !== 'object') {
-                return false;
+                return true;
             }
             var flag = true;
             for (var key in obj) {
-                flag = true;
+                flag = false;
                 break;
             }
             return flag;
@@ -220,6 +220,9 @@ var init = (function() {
         var name, state, view, i, fake;
         if (!context) context = '';
         if (typeof(elm) == 'string') return elm;
+        if (jml._jQuery && elm instanceof jml._jQuery) {
+            return elm.clone().wrap('<div>').parent().html();
+        }
         if (!isArray(elm) || !(typeof(elm[0]) === 'string' || typeof(elm[0]) === 'function')) {
             return elm;
         }
@@ -269,10 +272,11 @@ var init = (function() {
         }
         
         if (!isEmptyObject(elm.styles)) {
-            if (window.jcss) {
+            var jcss = (typeof(window) !== 'undefined' && window.jcss) || (typeof(jml._jQuery) !== 'undefined' && jml._jQuery.jcss);
+            if (jcss) {
                 for (var style in elm.styles) {
-                    if (window.jcss.mixins[style]) {
-                        var styles = window.jcss.mixins[style](elm.styles[style]);
+                    if (jcss.mixins[style]) {
+                        var styles = jcss.mixins[style](elm.styles[style]);
                         if (!styles[style]) {
                             delete elm.styles[style];
                         } else {
@@ -391,11 +395,11 @@ var init = (function() {
         if (!def) def = '';
         var path = name.split('.');
         if(path[1]) {
-            return function() {
+            return function () {
                 return getByPath(this, [].concat(path));
             };
         }
-        return function() {
+        return function () {
             return this[name] !== undefined ? this[name] : def;
         };
     };
@@ -420,7 +424,7 @@ var init = (function() {
     };
     
     jml.map = function jmlMap (name, handler) {
-        return function() {
+        return function () {
             if (!isArray(this[name])) return '';
             var self = this;
             return map(this[name], function() {
@@ -429,14 +433,30 @@ var init = (function() {
         }
     };
     
+    jml.filter = function () {
+        var args = getArgs(arguments);
+        return function () {
+            var obj = {};
+            for (var i = 0, len = args.length; i < len; i++) {
+                var name = args[i];
+                if (this[name] !== undefined) {
+                    obj[name] = this[name];
+                }
+            }
+            return obj;
+        }
+    };
+    
     /* Setup plugin for jQuery */
     
-    jml.jQuery = function($) {
+    jml.jQuery = function ($) {
         if (!$) {
             return jml._jQuery;
         } else {
             jml._jQuery = $;
         }
+        
+        $.jml = jml;
         
         $.fn.render = function(view, state, place) {
             if (isString(state)) {
@@ -478,12 +498,11 @@ var init = (function() {
     
 });
 
-try {
+if ((typeof module || typeof module.exports) !== 'undefined') {
 	/* nodejs stuff */
-    if (!module.exports) throw '';
     var jml = init();
 	module.exports = jml;
-} catch(e) {
+} else {
 	window.jml = init();
 }
 
