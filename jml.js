@@ -145,10 +145,10 @@ var init = (function() {
 
     jml.view = function(name, view, state) {
         if (!name || typeof(name) !== 'string') {
-            throw {message: 'jml: wrong view name'};
+            throw 'jml: wrong view name; type - ' + typeof name;
         }
         if (!isArray(view)) {
-            throw {message: 'jml: wrong view (not array)'};
+            throw 'jml: wrong view (not array) type - ' + typeof view;
         }
         view.state = state;
         view.name = name;
@@ -172,7 +172,7 @@ var init = (function() {
         var main = tag.match(/^[^\[]*/)[0];
         var params = main.match(/^([a-zA-Z0-9_-]*|\&|)(#([a-zA-Z0-9_\-]*)|)(\.([a-zA-Z0-9_\-\.]*)|)$/);
         if (!params) {
-            throw {message: 'jml: wrong element for parsing', element: elm};
+            throw 'jml: wrong element for parsing; type - ' + typeof elm;
         }
         var blocks = tag.match(/\[[a-zA-Z0-9_-]+(=("[^\"]*"|[0-9]+)|)\]/g);
         var attrs = {};
@@ -189,7 +189,7 @@ var init = (function() {
 
     jml.parseElement = function parseElement(elm) {
         if (!isArray(elm) || !elm[0]) {
-            throw {message: 'jml: wrong element for parsing', element: elm};
+            throw 'jml: wrong element for parsing; type - ' + typeof elm;
         }
         var temp = jml.parseTag(elm[0]);
         var params = temp.params;
@@ -267,7 +267,7 @@ var init = (function() {
                 
                 elm.classes.push(jml.name2class(name));
             } else {
-                throw {message: 'pattern `' + name + '` not found'};
+                throw 'pattern `' + name + '` not found';
             }
         }
         
@@ -305,7 +305,7 @@ var init = (function() {
         }
         
         if (!elm.tag) {
-            throw {message: 'Tag name not set', element: elm};
+            throw 'Tag name not set; element type - ' + typeof elm;
         }
         if (!~inArray(elm.tag, jml.noClose)) {
             out += '<' + elm.tag + jml.renderAttrs(elm.attrs) + '>';
@@ -425,7 +425,7 @@ var init = (function() {
     
     jml.map = function jmlMap (name, handler) {
         return function () {
-            if (!isArray(this[name])) return '';
+            if (!isArray(this[name]) && !isPlainObject(this[name])) return '';
             var self = this;
             return map(this[name], function() {
                 return handler.apply(self, getArgs(arguments));
