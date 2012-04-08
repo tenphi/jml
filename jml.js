@@ -2,7 +2,7 @@
 * JML
 * Copyright(c) 2012 Andrey Yamanov <tenphi@gmail.com>
 * MIT Licensed
-* @version 0.3.2
+* @version 0.3.3
 */
 
 (function() {
@@ -404,20 +404,24 @@ var init = (function() {
         };
     };
     
-    jml.classes = function classes (classes) {
-        if (!isArray(classes)) return '';
-        classes = unique(classes);
-        return (classes.length ? '.' + classes.join('.') : '');
-    };
-    
-    jml.attrs = function attrs (attrs) {
-        if (!isPlainObject(attrs)) return '';
+    jml.tag = function(info) {
         var out = '';
-        for (var name in attrs) {
-            if (isString(attrs[name])) {
-                out += '[' + name + '="' + attrs[name].replace(/"/g, '\\"') + '"]';
-            } else if (isNumeric(attrs[name])) {
-                out += '[' + name + '="' + attrs[name] + '"]';
+        if (info.tag)
+            out += info.tag;
+        if (info.id)
+            out += '#' + info.id;
+        if (info.classes && isArray(info.classes)) {
+            var classes = unique(info.classes);
+            out += (classes.length ? '.' + classes.join('.') : '');
+        }
+        if (info.attrs && isPlainObject(info.attrs)) {
+            var attrs = info.attrs;
+            for (var name in attrs) {
+                if (isString(attrs[name])) {
+                    out += '[' + name + '="' + attrs[name].replace(/"/g, '\\"') + '"]';
+                } else if (isNumeric(attrs[name])) {
+                    out += '[' + name + '="' + attrs[name] + '"]';
+                }
             }
         }
         return out;
@@ -425,7 +429,8 @@ var init = (function() {
     
     jml.map = function jmlMap (name, handler) {
         return function () {
-            if (!isArray(this[name]) && !isPlainObject(this[name])) return '';
+            if (!isArray(this[name]) && !isPlainObject(this[name])) 
+                return '';
             var self = this;
             return map(this[name], function() {
                 return handler.apply(self, getArgs(arguments));
@@ -439,9 +444,8 @@ var init = (function() {
             var obj = {};
             for (var i = 0, len = args.length; i < len; i++) {
                 var name = args[i];
-                if (this[name] !== undefined) {
+                if (this[name] !== undefined)
                     obj[name] = this[name];
-                }
             }
             return obj;
         }
@@ -498,8 +502,7 @@ var init = (function() {
     
 });
 
-if ((typeof module || typeof module.exports) !== 'undefined') {
-	/* nodejs stuff */
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     var jml = init();
 	module.exports = jml;
 } else {
