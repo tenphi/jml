@@ -2,7 +2,7 @@
 * JML
 * Copyright(c) 2012 Andrey Yamanov <tenphi@gmail.com>
 * MIT Licensed
-* @version 0.3.4
+* @version 0.3.5
 */
 
 (function() {
@@ -166,22 +166,24 @@ var init = (function() {
     };
     
     jml.parseTag = function parseTag(tag) {
-        if (jml.cache[tag]) {
-            return jml.cache[tag];
-        }
+        if (jml.cache[tag])
+            return clone(jml.cache[tag]);
         var params = tag.match(/^([a-zA-Z0-9_-]*|\&|)(#([a-zA-Z0-9_\-]*)|)(\.([a-zA-Z0-9_\-\.]*)|)$/);
-        if (!params) {
+        if (!params)
             throw 'jml: wrong element for parsing; type - ' + typeof tag;
-        }
-        jml.cache[tag] = params;
-        return jml.cache[tag];
+        var info = {
+            tag: params[1],
+            id: params[3] ? params[3] : '',
+            classes: params[5] ? params[5].split('.') : []
+        };
+        jml.cache[tag] = info;
+        return clone(jml.cache[tag]);
     };
 
     jml.parseElement = function parseElement(elm) {
-        if (!isArray(elm) || !elm[0]) {
+        if (!isArray(elm) || !elm[0])
             throw 'jml: wrong element for parsing; type - ' + typeof elm;
-        }
-        var params = jml.parseTag(elm[0]);
+        var info = isPlainObject(elm[0]) ? elm[0] : jml.parseTag(elm[0]);
         var attrs = {};
         
         var hasOptions = isPlainObject(elm[1]);
@@ -196,9 +198,9 @@ var init = (function() {
         var offset = hasOptions ? 2 : 1;
         var content = elm.slice(offset);
         return {
-            tag: params[1],
-            id: params[3] ? params[3] : '',
-            classes: params[5] ? params[5].split('.') : [],
+            tag: info.tag,
+            id: info.id || '',
+            classes: info.classes || [],
             attrs: attrs,
             styles: hasOptions ? elm[1] : {},
             content: content
@@ -207,15 +209,20 @@ var init = (function() {
 
     jml.renderElement = function renderElement(elm, context) {
         var name, state, view, i, fake;
-        if (!context) context = '';
-        if (typeof(elm) == 'string') return elm;
-        if (jml._jQuery && elm instanceof jml._jQuery) {
-            return elm.clone().wrap('<div>').parent().html();
-        }
-        if (!isArray(elm) || !(typeof(elm[0]) === 'string' || typeof(elm[0]) === 'function')) {
+        
+        if (!context)
+            context = '';
+        
+        if (typeof(elm) == 'string')
             return elm;
-        }
-        if (elm[0].match(/^[A-Z][a-zA-Z0-9\.]*$/)) {
+        
+        if (jml._jQuery && elm instanceof jml._jQuery)
+            return elm.clone().wrap('<div>').parent().html();
+        
+        if (!isArray(elm))
+            return elm;
+        
+        if (typeof elm[0] === 'string' && elm[0].match(/^[A-Z][a-zA-Z0-9\.]*$/)) {
             /* view */
             var temp = {};
             temp.sid = elm[0];
@@ -391,31 +398,6 @@ var init = (function() {
         return function () {
             return this[name] !== undefined ? this[name] : def;
         };
-    };
-    
-    jml.tag = function(info) {
-        var out = ['', {}];
-        if (info.tag)
-            out[0] += info.tag;
-        if (info.id)
-            out[0] += '#' + info.id;
-        if (info.classes && isArray(info.classes)) {
-            var classes = unique(info.classes);
-            out[0] += (classes.length ? '.' + classes.join('.') : '');
-        }
-        if (info.attrs && isPlainObject(info.attrs)) {
-            var attrs = info.attrs;
-            for (var name in attrs) {
-                out[1]['_' + name] = attrs[name];
-            }
-        }
-        if (info.styles && isPlainObject(info.styles)) {
-            var styles = info.styles;
-            for (var name in styles) {
-                out[1][name] = styles[name];
-            }
-        }
-        return out;
     };
     
     jml.map = function jmlMap (name, handler) {
