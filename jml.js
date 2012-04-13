@@ -2,7 +2,7 @@
 * JML
 * Copyright(c) 2012 Andrey Yamanov <tenphi@gmail.com>
 * MIT Licensed
-* @version 0.3.3
+* @version 0.3.4
 */
 
 (function() {
@@ -169,21 +169,11 @@ var init = (function() {
         if (jml.cache[tag]) {
             return jml.cache[tag];
         }
-        var main = tag.match(/^[^\[]*/)[0];
-        var params = main.match(/^([a-zA-Z0-9_-]*|\&|)(#([a-zA-Z0-9_\-]*)|)(\.([a-zA-Z0-9_\-\.]*)|)$/);
+        var params = tag.match(/^([a-zA-Z0-9_-]*|\&|)(#([a-zA-Z0-9_\-]*)|)(\.([a-zA-Z0-9_\-\.]*)|)$/);
         if (!params) {
-            throw 'jml: wrong element for parsing; type - ' + typeof elm;
+            throw 'jml: wrong element for parsing; type - ' + typeof tag;
         }
-        var blocks = tag.match(/\[[a-zA-Z0-9_-]+(=("[^\"]*"|[0-9]+)|)\]/g);
-        var attrs = {};
-        if (blocks) for (var i = 0; i < blocks.length; i++) {
-            var match = blocks[i].match(/^\[([a-zA-Z0-9_-]+)(=("([^\"]*)"|[0-9]+)|)\]$/);
-            attrs[match[1]] = match[4] !== undefined ? match[4] : (match[3] ? match[3] : '');
-        }
-        jml.cache[tag] = {
-            params: params,
-            attrs: attrs
-        }
+        jml.cache[tag] = params;
         return jml.cache[tag];
     };
 
@@ -191,15 +181,14 @@ var init = (function() {
         if (!isArray(elm) || !elm[0]) {
             throw 'jml: wrong element for parsing; type - ' + typeof elm;
         }
-        var temp = jml.parseTag(elm[0]);
-        var params = temp.params;
-        var attrs = temp.attrs;
+        var params = jml.parseTag(elm[0]);
+        var attrs = {};
         
         var hasOptions = isPlainObject(elm[1]);
         if (hasOptions) {
             for (var name in elm[1]) {
-                if (elm[1][name][0] == '[') {
-                    attrs[name.substr(1, name.length - 2)] = elm[1][name];
+                if (name.charAt(0) == '_') {
+                    attrs[jml.handleName(name.substring(1))] = elm[1][name];
                     delete elm[1][name];
                 }
             }
@@ -361,20 +350,20 @@ var init = (function() {
             if (isArray(styles[name])) {
                 for (var i = 0; i < styles[name].length; i++) {
                     if (isString(styles[name][i])) styles[name][i].replace(/"/g, '');
-                    out += handleName(name) + ': ' + styles[name][i] + '; ';
+                    out += jml.handleName(name) + ': ' + styles[name][i] + '; ';
                 }
             } else {
                 if (isString(styles[name])) styles[name].replace(/"/g, '');
-                out += handleName(name) + ': ' + styles[name] + '; ';
+                out += jml.handleName(name) + ': ' + styles[name] + '; ';
             }
         }
         return out;
-        
-        function handleName(name) {
-            return name.replace(/[A-Z]/g, function(s) {
-                return '-' + s.toLowerCase();
-            });
-        }
+    };
+    
+    jml.handleName = function handleName(name) {
+        return name.replace(/[A-Z]/g, function(s) {
+            return '-' + s.toLowerCase();
+        });
     };
     
     jml.findViewName = function findViewName(name, context) {
@@ -405,23 +394,25 @@ var init = (function() {
     };
     
     jml.tag = function(info) {
-        var out = '';
+        var out = ['', {}];
         if (info.tag)
-            out += info.tag;
+            out[0] += info.tag;
         if (info.id)
-            out += '#' + info.id;
+            out[0] += '#' + info.id;
         if (info.classes && isArray(info.classes)) {
             var classes = unique(info.classes);
-            out += (classes.length ? '.' + classes.join('.') : '');
+            out[0] += (classes.length ? '.' + classes.join('.') : '');
         }
         if (info.attrs && isPlainObject(info.attrs)) {
             var attrs = info.attrs;
             for (var name in attrs) {
-                if (isString(attrs[name])) {
-                    out += '[' + name + '="' + attrs[name].replace(/"/g, '\\"') + '"]';
-                } else if (isNumeric(attrs[name])) {
-                    out += '[' + name + '="' + attrs[name] + '"]';
-                }
+                out[1]['_' + name] = attrs[name];
+            }
+        }
+        if (info.styles && isPlainObject(info.styles)) {
+            var styles = info.styles;
+            for (var name in styles) {
+                out[1][name] = styles[name];
             }
         }
         return out;
