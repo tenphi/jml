@@ -2,11 +2,11 @@
   "author": "Andrey Yamanov <tenphi@gmail.com> (http://tenphi.com)",
   "name": "jml",
   "description": "Template engine based on native Javascript",
-  "version": "0.3.5",
-  "homepage": "http://github.com/tenphi/jml",
+  "version": "0.3.6",
+  "homepage": "http://tenphi.github.com/jml",
   "repository": {
     "type": "git",
-    "url": "git://github.com/Tenphi/jml.git"
+    "url": "git://github.com/tenphi/jml.git"
   },
   "main": "./jml.js",
   "keywords": ["template", "engine", "render"],

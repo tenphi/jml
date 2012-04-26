@@ -2,7 +2,7 @@
 * JML
 * Copyright(c) 2012 Andrey Yamanov <tenphi@gmail.com>
 * MIT Licensed
-* @version 0.3.5
+* @version 0.3.6
 */
 
 (function() {
@@ -377,9 +377,10 @@ var init = (function() {
         return name;
     };
     
-    jml.trigger = function trigger(name, state, id) {
+    /*jml.trigger = function trigger(name, state, id) {
         return '';
-    };
+    };*/
+    jml.trigger = null;
     
     jml.name2class = function name2class(name) {
         return name.toLowerCase().replace(/\./g, '-');
