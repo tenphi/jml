@@ -2,7 +2,7 @@
 * JML
 * Copyright(c) 2012 Andrey Yamanov <tenphi@gmail.com>
 * MIT Licensed
-* @version 0.3.6
+* @version 0.3.7
 */
 
 (function() {
@@ -168,7 +168,7 @@ var init = (function() {
     jml.parseTag = function parseTag(tag) {
         if (jml.cache[tag])
             return clone(jml.cache[tag]);
-        var params = tag.match(/^([a-zA-Z0-9_-]*|\&|)(#([a-zA-Z0-9_\-]*)|)(\.([a-zA-Z0-9_\-\.]*)|)$/);
+        var params = tag.match(/^([a-zA-Z0-9\:_-]*|\&|)(#([a-zA-Z0-9_\-]*)|)(\.([a-zA-Z0-9_\-\.]*)|)$/);
         if (!params)
             throw 'jml: wrong element for parsing; type - ' + typeof tag;
         var info = {
