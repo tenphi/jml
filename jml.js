@@ -2,7 +2,7 @@
 * JML
 * Copyright(c) 2012 Andrey Yamanov <tenphi@gmail.com>
 * MIT Licensed
-* @version 0.3.7
+* @version 0.3.8
 */
 
 (function() {
@@ -188,10 +188,11 @@ var init = (function() {
         
         var hasOptions = isPlainObject(elm[1]);
         if (hasOptions) {
-            for (var name in elm[1]) {
+            var options = clone(elm[1]);
+            for (var name in options) {
                 if (name.charAt(0) == '_') {
-                    attrs[jml.handleName(name.substring(1))] = elm[1][name];
-                    delete elm[1][name];
+                    attrs[jml.handleName(name.substring(1))] = options[name];
+                    delete options[name];
                 }
             }
         }
@@ -202,7 +203,7 @@ var init = (function() {
             id: info.id || '',
             classes: info.classes || [],
             attrs: attrs,
-            styles: hasOptions ? elm[1] : {},
+            styles: hasOptions ? options : {},
             content: content
         };
     };
