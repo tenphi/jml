@@ -2,7 +2,7 @@
 * JML
 * Copyright(c) 2012 Andrey Yamanov <tenphi@gmail.com>
 * MIT Licensed
-* @version 0.3.8
+* @version 0.3.9
 */
 
 (function() {
@@ -30,6 +30,17 @@ var init = (function() {
             for(var key in obj)
                 temp[key] = clone(obj[key]);
             return temp;
+        },
+        cloneWithState = function cloneWithState(obj, state) {
+            var nobj = {};
+            for (var name in obj) {
+                if (!isFunction(obj[name])) {
+                    nobj[name] = obj[name];
+                    continue;
+                }
+                nobj[name] = obj[name].apply(state);
+            }
+            return nobj;
         },
         unique = function(arr) {
             arr = clone(arr).sort();
@@ -153,6 +164,9 @@ var init = (function() {
         view.state = state;
         view.name = name;
         jml.views[name] = view;
+        return function(state) {
+            return jml.render(view, state);
+        }
     };
 
     jml.render = function render(template, state, context) {
@@ -167,7 +181,7 @@ var init = (function() {
     
     jml.parseTag = function parseTag(tag) {
         if (jml.cache[tag])
-            return clone(jml.cache[tag]);
+            return jml.cache[tag];
         var params = tag.match(/^([a-zA-Z0-9\:_-]*|\&|)(#([a-zA-Z0-9_\-]*)|)(\.([a-zA-Z0-9_\-\.]*)|)$/);
         if (!params)
             throw 'jml: wrong element for parsing; type - ' + typeof tag;
@@ -177,7 +191,7 @@ var init = (function() {
             classes: params[5] ? params[5].split('.') : []
         };
         jml.cache[tag] = info;
-        return clone(jml.cache[tag]);
+        return jml.cache[tag];
     };
 
     jml.parseElement = function parseElement(elm) {
@@ -188,11 +202,13 @@ var init = (function() {
         
         var hasOptions = isPlainObject(elm[1]);
         if (hasOptions) {
-            var options = clone(elm[1]);
+            var styles = {};
+            var options = elm[1];
             for (var name in options) {
                 if (name.charAt(0) == '_') {
                     attrs[jml.handleName(name.substring(1))] = options[name];
-                    delete options[name];
+                } else {
+                    styles[name] = options[name];
                 }
             }
         }
@@ -201,15 +217,15 @@ var init = (function() {
         return {
             tag: info.tag,
             id: info.id || '',
-            classes: info.classes || [],
+            classes: info.classes ? info.classes.concat([]) : [],
             attrs: attrs,
-            styles: hasOptions ? options : {},
+            styles: hasOptions ? styles : {},
             content: content
         };
     };
 
     jml.renderElement = function renderElement(elm, context) {
-        var name, state, view, i, fake;
+        var name, state, view, i, fake, classes;
         
         if (!context)
             context = '';
@@ -322,7 +338,11 @@ var init = (function() {
     };
 
     jml.handle = function handle(view, state) {
-        if (!isArray(view)) return view;
+        if (isPlainObject(view)) {
+            view = cloneWithState(view, state);
+        }
+        if (!isArray(view))
+            return view;
         var env = getArgs(arguments).slice(2);
         var nview = [];
         for (var i = 0; i < view.length; i++) {
@@ -331,6 +351,8 @@ var init = (function() {
                 continue;
             }
             if (!isFunction(view[i])) {
+                if (isPlainObject(view[i]))
+                    view[i] = cloneWithState(view[i], state);
                 nview.push(view[i]);
                 continue;
             }
