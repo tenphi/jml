@@ -2,7 +2,7 @@
 * JML
 * Copyright(c) 2012 Andrey Yamanov <tenphi@gmail.com>
 * MIT Licensed
-* @version 0.3.9
+* @version 0.4.0
 */
 
 (function() {
@@ -150,11 +150,18 @@ var init = (function() {
 
     jml.views = {};
     
-    jml.cache = {};
+    jml.tagCache = {};
+    
+    jml.cacheLimit = 1000;
     
     jml.noClose = ['base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source'];
 
     jml.view = function(name, view, state) {
+        if (isArray(name)) {
+            state = view;
+            view = name;
+            name = '';
+        }
         if (!name || typeof(name) !== 'string') {
             throw 'jml: wrong view name; type - ' + typeof name;
         }
@@ -163,9 +170,18 @@ var init = (function() {
         }
         view.state = state;
         view.name = name;
-        jml.views[name] = view;
+        view.cache = {};
+        view.cacheList = [];
+        if (name)
+            jml.views[name] = view;
         return function(state) {
-            return jml.render(view, state);
+            var hash = JSON.stringify(state);
+            var cache = jml.getCache(view, hash);
+            if (cache)
+                return cache;
+            var tmp = jml.render([view], state);
+            jml.setCache(view, hash, tmp);
+            return tmp;
         }
     };
 
@@ -180,8 +196,8 @@ var init = (function() {
     };
     
     jml.parseTag = function parseTag(tag) {
-        if (jml.cache[tag])
-            return jml.cache[tag];
+        if (jml.tagCache[tag])
+            return jml.tagCache[tag];
         var params = tag.match(/^([a-zA-Z0-9\:_-]*|\&|)(#([a-zA-Z0-9_\-]*)|)(\.([a-zA-Z0-9_\-\.]*)|)$/);
         if (!params)
             throw 'jml: wrong element for parsing; type - ' + typeof tag;
@@ -190,8 +206,8 @@ var init = (function() {
             id: params[3] ? params[3] : '',
             classes: params[5] ? params[5].split('.') : []
         };
-        jml.cache[tag] = info;
-        return jml.cache[tag];
+        jml.tagCache[tag] = info;
+        return jml.tagCache[tag];
     };
 
     jml.parseElement = function parseElement(elm) {
@@ -259,6 +275,10 @@ var init = (function() {
         if (elm.sid) {
             name = jml.findViewName(elm.sid, context ? context : undefined);
             view = jml.views[name];
+            var hash = JSON.stringify(state);
+            var cache = jml.getCache(view, hash);
+            if (cache)
+                return cache;
             if (view) {
                 state = view.state ? clone(view.state) : {};
                 state = extend(state, elm.state);
@@ -334,6 +354,8 @@ var init = (function() {
             out += '<' + elm.tag + jml.renderAttrs(elm.attrs) + ' />';
         }
         if (state && jml.trigger) out += jml.trigger(name, state, id, fake);
+        if (elm.sid)
+            jml.setCache(view, hash, out);
         return out;
     };
 
@@ -398,6 +420,21 @@ var init = (function() {
     
     jml.findViewName = function findViewName(name, context) {
         return name;
+    };
+    
+    jml.getCache = function getCache(view, hash) {
+        return view.cache[hash];
+    };
+    
+    jml.setCache = function setCache(view, hash, str) {
+        if (!view.cache[hash]) {
+            if (view.cacheList.length >= jml.cacheLimit) {
+                var oldKey = view.cacheList.shift();
+                delete view.cache[oldKey];
+            }
+            view.cacheList.push(hash);
+        }
+        view.cache[hash] = str;
     };
     
     /*jml.trigger = function trigger(name, state, id) {
