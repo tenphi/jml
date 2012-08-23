@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>JML by tenphi</title>
-    
+
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -17,11 +17,14 @@
       <header>
         <h1>JML</h1>
         <p>HTML template engine based on native Javascript</p>
+
         <p class="view"><a href="https://github.com/tenphi/jml">View the Project on GitHub <small>tenphi/jml</small></a></p>
+
+
         <ul>
           <li><a href="https://github.com/tenphi/jml/zipball/master">Download <strong>ZIP File</strong></a></li>
           <li><a href="https://github.com/tenphi/jml/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/tenphi/jml">Fork On <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/tenphi/jml">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
       <section>
@@ -34,33 +37,24 @@
 
 <p>... or add script to your web page.</p>
 
-<div class="highlight">
-<pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"/path/to/jml.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-</pre>
-</div>
-
+<div class="highlight"><pre><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"/path/to/jml.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
 
 <h2>Simple usage</h2>
 
-<div class="highlight">
-<pre><span class="nx">jml</span><span class="p">.</span><span class="nx">render</span><span class="p">([[</span><span class="s1">'div.container'</span><span class="p">,</span>
-  <span class="p">[</span><span class="s1">'a.link'</span><span class="p">,</span> <span class="p">{</span><span class="nx">_href</span><span class="o">:</span> <span class="s1">'<a href="http://tenphi.com">http://tenphi.com</a>'</span><span class="p">},</span> <span class="s1">'Link text'</span><span class="p">],</span>
+<div class="highlight"><pre><span class="nx">jml</span><span class="p">.</span><span class="nx">render</span><span class="p">([[</span><span class="s1">'div.container'</span><span class="p">,</span>
+  <span class="p">[</span><span class="s1">'a.link'</span><span class="p">,</span> <span class="p">{</span><span class="nx">_href</span><span class="o">:</span> <span class="s1">'http://tenphi.com'</span><span class="p">},</span> <span class="s1">'Link text'</span><span class="p">],</span>
   <span class="p">[</span><span class="s1">'img.image'</span><span class="p">,</span> <span class="p">{</span><span class="nx">_src</span><span class="o">:</span> <span class="s1">'/myphoto.jpg'</span><span class="p">,</span> <span class="nx">_alt</span><span class="o">:</span> <span class="s1">''</span><span class="p">,</span> <span class="nx">width</span><span class="o">:</span> <span class="s1">'100px'</span><span class="p">}]</span>
 <span class="p">]]);</span>
-</pre>
-</div>
-
+</pre></div>
 
 <p>output (with beautifying):</p>
 
-<div class="highlight">
-<pre><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;a</span> <span class="na">class=</span><span class="s">"link"</span> <span class="na">href=</span><span class="s">"<a href="http://tenphi.com">http://tenphi.com</a>"</span><span class="nt">&gt;</span>Link text<span class="nt">&lt;/a&gt;</span>
+<div class="highlight"><pre><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;a</span> <span class="na">class=</span><span class="s">"link"</span> <span class="na">href=</span><span class="s">"http://tenphi.com"</span><span class="nt">&gt;</span>Link text<span class="nt">&lt;/a&gt;</span>
   <span class="nt">&lt;img</span> <span class="na">class=</span><span class="s">"image"</span> <span class="na">src=</span><span class="s">"/myphoto.jpg"</span> <span class="na">alt=</span><span class="s">""</span> <span class="na">style=</span><span class="s">"width: 100px;"</span> <span class="nt">/&gt;</span>
 <span class="nt">&lt;/div&gt;</span>
-</pre>
-</div>
-
+</pre></div>
 
 <h2>Render container</h2>
 
@@ -72,79 +66,48 @@
 <li>classes</li>
 </ul><p>Example: <code>['a#id.class.second-class']</code></p>
 
-<h3>Alternative declaration</h3>
-
-<p>Declaration of tag properties can be object:</p>
-
-<div class="highlight">
-<pre><span class="nx">jml</span><span class="p">.</span><span class="nx">render</span><span class="p">([[{</span>
-  <span class="nx">tag</span><span class="o">:</span> <span class="s1">'a'</span><span class="p">,</span>
-  <span class="nx">id</span><span class="o">:</span> <span class="s1">'link'</span><span class="p">,</span>
-  <span class="nx">classes</span><span class="o">:</span> <span class="s1">'link-class'</span>
-<span class="p">},</span> <span class="p">{</span>
-  <span class="nx">_href</span><span class="o">:</span> <span class="s1">'<a href="http://tenphi.com">http://tenphi.com</a>'</span>
-<span class="p">},</span> <span class="s1">'Link'</span><span class="p">]]);</span>
-</pre>
-</div>
-
-
 <h2>Options for render</h2>
 
 <p>Render function can accept options:</p>
 
-<div class="highlight">
-<pre><span class="kd">var</span> <span class="nx">link</span> <span class="o">=</span> <span class="p">[</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">link</span> <span class="o">=</span> <span class="p">[</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">return</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="p">{</span><span class="nx">_href</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">url</span><span class="p">}].</span><span class="nx">concat</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
 <span class="p">}];</span>
 <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="nx">url</span><span class="o">:</span> <span class="s1">'<a href="http://tenphi.com">http://tenphi.com</a>'</span><span class="p">,</span>
+  <span class="nx">url</span><span class="o">:</span> <span class="s1">'http://tenphi.com'</span><span class="p">,</span>
   <span class="nx">body</span><span class="o">:</span> <span class="s1">'Link Text'</span>
 <span class="p">};</span>
 <span class="nx">jml</span><span class="p">.</span><span class="nx">render</span><span class="p">([</span><span class="nx">link</span><span class="p">],</span> <span class="nx">options</span><span class="p">);</span>
-</pre>
-</div>
-
+</pre></div>
 
 <h2>Advanced usage with Templates</h2>
 
 <p>Add template:</p>
 
-<div class="highlight">
-<pre><span class="nx">jml</span><span class="p">.</span><span class="nx">view</span><span class="p">(</span><span class="s1">'Link'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="p">{</span><span class="nx">_href</span><span class="o">:</span> <span class="s1">'url'</span><span class="p">},</span> <span class="s1">'Link Text'</span><span class="p">]);</span>
-</pre>
-</div>
-
+<div class="highlight"><pre><span class="nx">jml</span><span class="p">.</span><span class="nx">view</span><span class="p">(</span><span class="s1">'Link'</span><span class="p">,</span> <span class="p">[[</span><span class="s1">'a'</span><span class="p">,</span> <span class="p">{</span><span class="nx">_href</span><span class="o">:</span> <span class="s1">'url'</span><span class="p">},</span> <span class="s1">'Link Text'</span><span class="p">]]);</span>
+</pre></div>
 
 <p>then render it:</p>
 
-<div class="highlight">
-<pre><span class="nx">jml</span><span class="p">.</span><span class="nx">render</span><span class="p">([[</span><span class="s1">'div.container'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'Link'</span><span class="p">]]]);</span>
-</pre>
-</div>
-
+<div class="highlight"><pre><span class="nx">jml</span><span class="p">.</span><span class="nx">render</span><span class="p">([[</span><span class="s1">'div.container'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'Link'</span><span class="p">]]]);</span>
+</pre></div>
 
 <h3>Template options</h3>
 
 <p>Rewrite template:</p>
 
-<div class="highlight">
-<pre><span class="nx">jml</span><span class="p">.</span><span class="nx">view</span><span class="p">(</span><span class="s1">'Link'</span><span class="p">,</span> <span class="p">[</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<div class="highlight"><pre><span class="nx">jml</span><span class="p">.</span><span class="nx">view</span><span class="p">(</span><span class="s1">'Link'</span><span class="p">,</span> <span class="p">[[</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">return</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="p">{</span><span class="nx">_href</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">url</span><span class="p">}].</span><span class="nx">concat</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
-<span class="p">}]);</span>
-</pre>
-</div>
-
+<span class="p">}]]);</span>
+</pre></div>
 
 <p>and render it with options:</p>
 
-<div class="highlight">
-<pre><span class="nx">jml</span><span class="p">.</span><span class="nx">render</span><span class="p">([[</span><span class="s1">'div.container'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'Link'</span><span class="p">,</span> <span class="p">{</span>
-  <span class="nx">url</span><span class="o">:</span> <span class="s1">'<a href="http://tenphi.com">http://tenphi.com</a>'</span><span class="p">,</span>
+<div class="highlight"><pre><span class="nx">jml</span><span class="p">.</span><span class="nx">render</span><span class="p">([[</span><span class="s1">'div.container'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'Link'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="nx">url</span><span class="o">:</span> <span class="s1">'http://tenphi.com'</span><span class="p">,</span>
   <span class="nx">body</span><span class="o">:</span> <span class="s1">'Link Text'</span>
 <span class="p">}]]]);</span>
-</pre>
-</div>
-
+</pre></div>
 
 <h2>JML Tools</h2>
 
@@ -154,46 +117,11 @@
 <li>
 <code>jml.prop(name)</code> - return property <code>name</code>
 </li>
-</ul><div class="highlight">
-<pre><span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">'a'</span><span class="p">,</span> <span class="p">{</span><span class="nx">_href</span><span class="o">:</span> <span class="s1">'<a href="http://tenphi.com">http://tenphi.com</a>'</span><span class="p">},</span> <span class="nx">jml</span><span class="p">.</span><span class="nx">prop</span><span class="p">(</span><span class="s1">'content'</span><span class="p">)]];</span>
+</ul><div class="highlight"><pre><span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">'a'</span><span class="p">,</span> <span class="p">{</span><span class="nx">_href</span><span class="o">:</span> <span class="s1">'http://tenphi.com'</span><span class="p">},</span> <span class="nx">jml</span><span class="p">.</span><span class="nx">prop</span><span class="p">(</span><span class="s1">'content'</span><span class="p">)]];</span>
 <span class="nx">jml</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="nx">template</span><span class="p">,</span> <span class="p">{</span><span class="nx">content</span><span class="o">:</span> <span class="s1">'Link Text'</span><span class="p">});</span>
-</pre>
-</div>
+</pre></div>
 
-
-<ul>
-<li>
-<code>jml.map(name, handler)</code> - return result of map function on property <code>name</code>
-</li>
-</ul><div class="highlight">
-<pre><span class="kd">var</span> <span class="nx">head</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">'head'</span><span class="p">,</span>
-  <span class="p">[</span><span class="s1">'title'</span><span class="p">,</span> <span class="s1">'Title of Site'</span><span class="p">],</span> 
-  <span class="nx">jml</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="s1">'styles'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="p">[[</span><span class="s1">'link'</span><span class="p">,</span> <span class="p">{</span>
-      <span class="nx">_rel</span><span class="o">:</span> <span class="s1">'stylesheet'</span><span class="p">,</span>
-      <span class="nx">_type</span><span class="o">:</span> <span class="s1">'text/css'</span><span class="p">,</span>
-      <span class="nx">_href</span><span class="o">:</span> <span class="nx">file</span>
-    <span class="p">}]];</span>
-  <span class="p">})</span>
-<span class="p">]];</span>
-<span class="nx">jml</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="nx">head</span><span class="p">,</span> <span class="p">{</span><span class="nx">styles</span><span class="o">:</span> <span class="p">[</span><span class="s1">'reset.css'</span><span class="p">,</span> <span class="s1">'main.css'</span><span class="p">]});</span>
-</pre>
-</div>
-
-
-<ul>
-<li>
-<code>jml.filter(name1, name2, ...)</code> - return options object without properties that not listed</li>
-</ul><div class="highlight">
-<pre><span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">'div'</span><span class="p">,</span> <span class="nx">jml</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="s1">'width'</span><span class="p">,</span> <span class="s1">'height'</span><span class="p">),</span> <span class="nx">jml</span><span class="p">.</span><span class="nx">prop</span><span class="p">(</span><span class="s1">'content'</span><span class="p">)]];</span>
-<span class="nx">jml</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="nx">template</span><span class="p">,</span> <span class="p">{</span>
-  <span class="nx">width</span><span class="o">:</span> <span class="s1">'100px'</span><span class="p">,</span>
-  <span class="nx">height</span><span class="o">:</span> <span class="s1">'100px'</span><span class="p">,</span>
-  <span class="nx">content</span><span class="o">:</span> <span class="s1">'Content Text'</span>
-<span class="p">});</span>
-</pre>
-</div>
-
+<p>full documentation will be soon</p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/tenphi">tenphi</a></p>
