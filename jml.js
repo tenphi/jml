@@ -179,6 +179,10 @@ var init = (function() {
             var cache = jml.getCache(view, hash);
             if (cache)
                 return cache;
+            if (!state)
+                state = {};
+            if (view.state)
+                state = extend(view.state, state);
             var tmp = jml.render([view], state);
             jml.setCache(view, hash, tmp);
             return tmp;
@@ -360,6 +364,8 @@ var init = (function() {
     };
 
     jml.handle = function handle(view, state) {
+        if (!state)
+            state = {};
         if (isPlainObject(view)) {
             view = cloneWithState(view, state);
         }
