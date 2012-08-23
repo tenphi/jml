@@ -279,7 +279,13 @@ JML - Javascript template engine
         return this;
       };
       watcher = function() {
-        return renderer.view = jml.loadView(file);
+        renderer.view = jml.loadView(file);
+        if (renderer.optimized) {
+          renderer.optimize();
+        }
+        if (renderer.saved) {
+          return renderer.save(saved);
+        }
       };
       if (file) {
         fs = require('fs');
@@ -287,12 +293,6 @@ JML - Javascript template engine
           fs.watchFile(file, {
             persistent: true
           }, watcher);
-          if (renderer.optimized) {
-            renderer.optimize();
-          }
-          if (renderer.saved) {
-            renderer.save(saved);
-          }
           renderer.watching = true;
           return renderer;
         };
@@ -562,8 +562,10 @@ JML - Javascript template engine
     jml.prop = function(name, def) {
       if (this[name] !== void 0) {
         return this[name];
-      } else {
+      } else if (def) {
         return def;
+      } else {
+        return '';
       }
     };
     return jml;
