@@ -3,7 +3,7 @@
 /*
 JML - Javascript template engine
 @copyright Yamanov Andrey <tenphi@gmail.com>
-@version 0.5
+@version 0.5.1
 */
 
 
@@ -178,7 +178,7 @@ JML - Javascript template engine
         fs = require('fs');
         try {
           data = fs.readFileSync(file, 'utf-8');
-          if (file.slice(-4) === '.cml') {
+          if (file.slice(-4) === '.cml' || file.slice(-7) === '.coffee') {
             coffee = require('coffee-script');
             return coffee["eval"](data);
           } else {

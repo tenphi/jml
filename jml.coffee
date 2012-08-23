@@ -1,7 +1,7 @@
 ###
 JML - Javascript template engine
 @copyright Yamanov Andrey <tenphi@gmail.com>
-@version 0.5
+@version 0.5.1
 ###
 
 type = do ->
@@ -118,7 +118,7 @@ init = () ->
             fs = require 'fs'
             try
                 data = fs.readFileSync file, 'utf-8'
-                if file.slice(-4) is '.cml'
+                if file.slice(-4) is '.cml' or file.slice(-7) is '.coffee'
                     coffee = require 'coffee-script'
                     return coffee.eval data
                 else
@@ -206,7 +206,7 @@ init = () ->
             renderer.view = jml.loadView file
             do renderer.optimize if renderer.optimized
             renderer.save(saved) if renderer.saved
-            
+
         if file
             fs = require 'fs'
             renderer.watch = ->
