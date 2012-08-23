@@ -1,16 +1,21 @@
 {
-  "author": "Andrey Yamanov <tenphi@gmail.com> (http://tenphi.com)",
+  "author": "Andrey Yamanov <tenphi@gmail.com>",
   "name": "jml",
-  "description": "Template engine based on native Javascript",
-  "version": "0.3.9",
+  "description": "Most native Javascript template engine",
+  "version": "0.5.0",
   "homepage": "http://tenphi.github.com/jml",
   "repository": {
     "type": "git",
     "url": "git://github.com/tenphi/jml.git"
   },
   "main": "./jml.js",
+  "scripts": {
+    "test": "nodeunit tests.js"
+  },
   "keywords": ["template", "engine", "render"],
-  "dependencies": {},
+  "dependencies": {
+    "sourin": ">= 0.0.2"
+  },
   "devDependencies": {},
   "optionalDependencies": {},
   "engines": {
