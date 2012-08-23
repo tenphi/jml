@@ -136,7 +136,7 @@ JML - Javascript template engine
   isClient = !isServer;
 
   init = function() {
-    var counter, glob, globTags, jml, optimize, optimizeArray, optimizeNormalize, optimizeTag, originalState, render, renderArray, renderAttrs, renderStyles, renderTag, saveAll;
+    var counter, jml, optimize, optimizeArray, optimizeNormalize, optimizeTag, originalState, render, renderArray, renderAttrs, renderStyles, renderTag, saveAll;
     jml = function() {
       var args;
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
@@ -559,56 +559,13 @@ JML - Javascript template engine
       }
       return out;
     };
-    jml.prop = function(value, def) {
-      if (value !== void 0) {
-        return value;
+    jml.prop = function(name, def) {
+      if (this[name] !== void 0) {
+        return this[name];
       } else {
         return def;
       }
     };
-    jml.allTags = ["a", "abbr", "acronym", "address", "applet", "area", "article", "aside", "audio", "b", "base", "basefont", "bdi", "bdo", "big", "blockquote", "body", "br", "button", "canvas", "caption", "center", "cite", "code", "col", "colgroup", "command", "datalist", "dd", "del", "details", "dfn", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure", "font", "footer", "form", "frame", "frameset", "h1", "h2", "h3", "h4", "h5", "h6", "head", "header", "hgroup", "hr", "html", "i", "iframe", "img", "input", "ins", "kbd", "keygen", "label", "legend", "li", "link", "map", "mark", "menu", "meta", "meter", "nav", "noframes", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "pre", "progress", "q", "rp", "rt", "ruby", "s", "samp", "script", "section", "select", "small", "source", "span", "strike", "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "time", "title", "tr", "track", "tt", "u", "ul", "var", "video", "wbr"];
-    glob = typeof global !== "undefined" && global !== null ? global : typeof window !== "undefined" && window !== null ? window : void 0;
-    if (glob) {
-      globTags = false;
-      jml.global = function(bool) {
-        var tag, _fn, _i, _j, _len, _len1, _ref, _ref1;
-        if (bool !== void 0) {
-          globTags = bool;
-        } else {
-          return globTags;
-        }
-        if (bool) {
-          _ref = jml.allTags;
-          _fn = function(tag) {
-            var func;
-            func = function() {
-              var args;
-              args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-              return [tag].concat(__slice.call(args));
-            };
-            return glob['$' + tag] = func;
-          };
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            tag = _ref[_i];
-            _fn(tag);
-          }
-          glob.$doctype = function(type) {
-            if (type == null) {
-              type = 'html';
-            }
-            return '<!doctype ' + type + '>';
-          };
-        } else {
-          _ref1 = jml.allTags;
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            tag = _ref1[_j];
-            delete glob['$' + tag];
-          }
-          delete glob.doctype;
-        }
-        return jml;
-      };
-    }
     return jml;
   };
 
