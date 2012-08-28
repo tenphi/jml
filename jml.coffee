@@ -1,7 +1,7 @@
 ###
 JML - Javascript template engine
 @copyright Yamanov Andrey <tenphi@gmail.com>
-@version 0.5.2
+@version 0.5.3
 ###
 
 type = do ->
@@ -205,12 +205,12 @@ init = () ->
         watcher = ->
             renderer.view = jml.loadView file
             do renderer.optimize if renderer.optimized
-            renderer.save(saved) if renderer.saved
+            renderer.save(renderer.saved) if renderer.saved
 
         if file
             fs = require 'fs'
-            renderer.watch = ->
-                fs.watchFile file, persistent: yes, watcher
+            renderer.watch = (interval) ->
+                fs.watchFile file, {persistent: yes, interval: interval or 500}, watcher
                 renderer.watching = yes
                 renderer
             renderer.unwatch = ->
@@ -227,12 +227,15 @@ init = () ->
             jml.views[name].optimize()
         jml
 
-    watchAll = jml.watchAll = (names) ->
+    watchAll = jml.watchAll = (interval, names) ->
+        if isArray interval
+            names = interval
+            interval = no
         if not names
             names = (name for name of jml.views)
         return if not names.length
         for name in names
-            jml.views[name].watch()
+            jml.views[name].watch(interval)
         jml
 
     if isServer

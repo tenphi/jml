@@ -2,7 +2,7 @@
   "author": "Andrey Yamanov <tenphi@gmail.com>",
   "name": "jml",
   "description": "Most native Javascript template engine",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "homepage": "http://tenphi.github.com/jml",
   "repository": {
     "type": "git",

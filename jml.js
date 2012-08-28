@@ -3,7 +3,7 @@
 /*
 JML - Javascript template engine
 @copyright Yamanov Andrey <tenphi@gmail.com>
-@version 0.5.2
+@version 0.5.3
 */
 
 
@@ -284,14 +284,15 @@ JML - Javascript template engine
           renderer.optimize();
         }
         if (renderer.saved) {
-          return renderer.save(saved);
+          return renderer.save(renderer.saved);
         }
       };
       if (file) {
         fs = require('fs');
-        renderer.watch = function() {
+        renderer.watch = function(interval) {
           fs.watchFile(file, {
-            persistent: true
+            persistent: true,
+            interval: interval || 500
           }, watcher);
           renderer.watching = true;
           return renderer;
@@ -325,8 +326,12 @@ JML - Javascript template engine
       }
       return jml;
     };
-    watchAll = jml.watchAll = function(names) {
+    watchAll = jml.watchAll = function(interval, names) {
       var name, _i, _len;
+      if (isArray(interval)) {
+        names = interval;
+        interval = false;
+      }
       if (!names) {
         names = (function() {
           var _results;
@@ -342,7 +347,7 @@ JML - Javascript template engine
       }
       for (_i = 0, _len = names.length; _i < _len; _i++) {
         name = names[_i];
-        jml.views[name].watch();
+        jml.views[name].watch(interval);
       }
       return jml;
     };
