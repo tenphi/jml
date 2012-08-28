@@ -118,6 +118,26 @@ module.exports =
             rendered = '<tag>value1value2value3</tag>'
             test.strictEqual template(param2: 'value2', param3: 'value3'), rendered, 'Template render'
             do test.done
+        include: (test) ->
+            template = jml.view 'Test', [
+                ['div'
+                    ['Test2'
+                        prop: 'value1'
+                        'value2'
+                    ]
+                ]
+            ]
+            jml.view 'Test2', [
+                ['span'
+                    -> @prop
+                    -> @content
+                ]
+            ]
+            rendered = '<div><span>value1value2</span></div>'
+            test.strictEqual template(), rendered, 'Template render with included template'
+            rendered = '<div>' + rendered + '</div>'
+            test.strictEqual jml.render([['div', ['Test']]]), rendered, 'Template render with included template'
+            do test.done
     optimize: (test) ->
         view = [
             ['tag1'

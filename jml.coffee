@@ -1,7 +1,7 @@
 ###
 JML - Javascript template engine
 @copyright Yamanov Andrey <tenphi@gmail.com>
-@version 0.5.1
+@version 0.5.2
 ###
 
 type = do ->
@@ -219,8 +219,24 @@ init = () ->
                 renderer
         renderer
 
+    optimizeAll = jml.optimizeAll = (names) ->
+        if not names
+            names = (name for name of jml.views)
+        return if not names.length
+        for name in names
+            jml.views[name].optimize()
+        jml
+
+    watchAll = jml.watchAll = (names) ->
+        if not names
+            names = (name for name of jml.views)
+        return if not names.length
+        for name in names
+            jml.views[name].watch()
+        jml
+
     if isServer
-        saveAll = jml.saveAll = (file) ->
+        saveAll = jml.saveAll = (file, names) ->
             if not names
                 names = (name for name of jml.views)
             data = ''

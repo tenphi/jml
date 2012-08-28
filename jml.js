@@ -3,7 +3,7 @@
 /*
 JML - Javascript template engine
 @copyright Yamanov Andrey <tenphi@gmail.com>
-@version 0.5.1
+@version 0.5.2
 */
 
 
@@ -136,7 +136,7 @@ JML - Javascript template engine
   isClient = !isServer;
 
   init = function() {
-    var counter, jml, optimize, optimizeArray, optimizeNormalize, optimizeTag, originalState, render, renderArray, renderAttrs, renderStyles, renderTag, saveAll;
+    var counter, jml, optimize, optimizeAll, optimizeArray, optimizeNormalize, optimizeTag, originalState, render, renderArray, renderAttrs, renderStyles, renderTag, saveAll, watchAll;
     jml = function() {
       var args;
       args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
@@ -304,9 +304,51 @@ JML - Javascript template engine
       }
       return renderer;
     };
+    optimizeAll = jml.optimizeAll = function(names) {
+      var name, _i, _len;
+      if (!names) {
+        names = (function() {
+          var _results;
+          _results = [];
+          for (name in jml.views) {
+            _results.push(name);
+          }
+          return _results;
+        })();
+      }
+      if (!names.length) {
+        return;
+      }
+      for (_i = 0, _len = names.length; _i < _len; _i++) {
+        name = names[_i];
+        jml.views[name].optimize();
+      }
+      return jml;
+    };
+    watchAll = jml.watchAll = function(names) {
+      var name, _i, _len;
+      if (!names) {
+        names = (function() {
+          var _results;
+          _results = [];
+          for (name in jml.views) {
+            _results.push(name);
+          }
+          return _results;
+        })();
+      }
+      if (!names.length) {
+        return;
+      }
+      for (_i = 0, _len = names.length; _i < _len; _i++) {
+        name = names[_i];
+        jml.views[name].watch();
+      }
+      return jml;
+    };
     if (isServer) {
-      saveAll = jml.saveAll = function(file) {
-        var data, fs, name, names, _i, _len;
+      saveAll = jml.saveAll = function(file, names) {
+        var data, fs, name, _i, _len;
         if (!names) {
           names = (function() {
             var _results;

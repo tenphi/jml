@@ -187,6 +187,32 @@
           param3: 'value3'
         }), rendered, 'Template render');
         return test.done();
+      },
+      include: function(test) {
+        var rendered, template;
+        template = jml.view('Test', [
+          [
+            'div', [
+              'Test2', {
+                prop: 'value1'
+              }, 'value2'
+            ]
+          ]
+        ]);
+        jml.view('Test2', [
+          [
+            'span', function() {
+              return this.prop;
+            }, function() {
+              return this.content;
+            }
+          ]
+        ]);
+        rendered = '<div><span>value1value2</span></div>';
+        test.strictEqual(template(), rendered, 'Template render with included template');
+        rendered = '<div>' + rendered + '</div>';
+        test.strictEqual(jml.render([['div', ['Test']]]), rendered, 'Template render with included template');
+        return test.done();
       }
     },
     optimize: function(test) {
