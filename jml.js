@@ -130,7 +130,9 @@
         var out = '', val;
         for (var name in attrs) {
             val = attrs[name];
-            if (isArray(val)) {
+            if (val === undefined) {
+                continue;
+            } else if (isArray(val)) {
                 val = val.join(' ');
             } else if (name === 'style' && isPlainObject(val)) {
                 val = renderStyles(val);
@@ -236,6 +238,12 @@
         return function jmlView(state) {
             return render(view, state);
         };
+    };
+
+    /* RequireJS Define */
+
+    if (typeof(define) === "function") {
+        define( "jml", [], function () { return jml; } );
     };
 
 })(typeof(exports) === 'undefined' ? this.jml = {} : exports, undefined);
