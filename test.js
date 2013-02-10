@@ -1,4 +1,4 @@
-var render = require('../lib/jml.js').render;
+var render = require('lib/jml.js').render;
 var fs = require('fs');
 
 module.exports = {

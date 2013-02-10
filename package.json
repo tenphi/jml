@@ -8,14 +8,14 @@
         "type": "git",
         "url": "git://github.com/tenphi/jml.git"
     },
-    "main": "./lib/jml.js",
+    "main": "./jml.js",
     "keywords": ["template", "engine", "render", "data-driven"],
     "dependencies": {},
     "devDependencies": {
         "nodeunit": "0.7.x"
     },
     "scripts": {
-        "test": "nodeunit ./test/test.js"
+        "test": "nodeunit ./test.js"
     },
     "optionalDependencies": {},
     "engine": "node >= 0.4.1"
