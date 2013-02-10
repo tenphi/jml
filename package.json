@@ -2,7 +2,7 @@
     "author": "Andrey Yamanov <tenphi@gmail.com> (http://tenphi.me)",
     "name": "jml",
     "description": "Simple data-driven content generation",
-    "version": "0.6",
+    "version": "0.6.0",
     "homepage": "http://github.com/tenphi/jml",
     "repository": {
         "type": "git",
