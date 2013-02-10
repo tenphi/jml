@@ -1,0 +1,6 @@
+{
+    "name": "jml",
+    "version": "0.6.1",
+    "main": ["./lib/jml.js"],
+    "dependencies": {}
+}
