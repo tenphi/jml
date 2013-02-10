@@ -14,7 +14,9 @@
     "devDependencies": {
         "nodeunit": "0.7.x"
     },
-    "test": "nodeunit ./test/test.js",
+    "scripts": {
+        "test": "nodeunit ./test/test.js"
+    },
     "optionalDependencies": {},
     "engine": "node >= 0.4.1"
 }
