@@ -1,24 +1,20 @@
 {
-  "author": "Andrey Yamanov <tenphi@gmail.com>",
-  "name": "jml",
-  "description": "Most native Javascript template engine",
-  "version": "0.5.3",
-  "homepage": "http://tenphi.github.com/jml",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/tenphi/jml.git"
-  },
-  "main": "./jml.js",
-  "scripts": {
-    "test": "nodeunit tests.js"
-  },
-  "keywords": ["template", "engine", "render"],
-  "dependencies": {
-    "sourin": ">= 0.0.2"
-  },
-  "devDependencies": {},
-  "optionalDependencies": {},
-  "engines": {
-    "node": ">= 0.4.1"
-  }
+    "author": "Andrey Yamanov <tenphi@gmail.com> (http://tenphi.me)",
+    "name": "jml",
+    "description": "Simple data-driven content generation",
+    "version": "0.6",
+    "homepage": "http://github.com/tenphi/jml",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/tenphi/jml.git"
+    },
+    "main": "./lib/jml.js",
+    "keywords": ["template", "engine", "render", "data-driven"],
+    "dependencies": {},
+    "devDependencies": {
+        "nodeunit": "0.7.x"
+    },
+    "test": "nodeunit ./test/test.js",
+    "optionalDependencies": {},
+    "engine": "node >= 0.4.1"
 }
