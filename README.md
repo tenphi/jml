@@ -75,7 +75,7 @@ and render it with state:
 
 ```javascript
 link({
-  body: 'link',
+  body: 'text',
   target: '_blank'
 });
 ```
